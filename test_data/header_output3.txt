@@ -1,0 +1,90 @@
+id: 49 44 53 54
+version: 35
+checksum: C8 E3 EE A4
+name: 69 51 01 00 76 69 73 74 61 73 2F 70 6C 61 6E 65 74 5F 62 6C 75 65 5F 73 75 6E 2E 6D 64 6C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+dataLength: 00
+eyeposition_x: 0D DD 03
+eyeposition_y: 00
+eyeposition_z: 00
+illumposition_x: 00
+illumposition_y: 00 00 40 BA
+illumposition_z: 00 00 60 3A
+hull_min_x: 00 6A D7 BF
+hull_min_y: 99 D2 4E C5
+hull_min_z: B8 5A 53 C5
+hull_max_x: 11 30 5A C5
+hull_max_y: 93 D2 4E 45
+hull_max_z: BF 5A 53 45
+view_bbmin_x: 2A 0C 5A 45
+view_bbmin_y: 00
+view_bbmin_z: 00
+view_bbmax_x: 00
+view_bbmax_y: 00
+view_bbmax_z: 00
+flags: 00
+bone_count: 11 00 80
+bone_offset: 01
+bone_controller_count: 14 03
+bone_controller_offset: 00
+hitbox_count: 08 04
+hitbox_offset: 01
+localanim_count: 08 04
+localanim_offset: 01
+localseq_count: 18 04
+localseq_offset: 01
+activity_list_version: A0 04
+events_indexed: 00
+texture_count: 00
+texture_offset: 02
+texturedir_count: 20 07
+texturedir_offset: 01
+skin_reference_count: 78 07
+skin_family_count: 02
+skin_reference_index: 01
+bodypart_count: 7C 07
+bodypart_offset: 01
+attachment_count: 90 05
+attachment_offset: 00
+local_node_count: 08 04
+local_node_index: 00
+local_node_name_index: 90 05
+flex_desc_count: 90 05
+flex_desc_index: 00
+flex_controller_count: 34 06
+flex_controller_index: 00
+flex_rules_count: 34 06
+flex_rules_index: 00
+ikchain_count: 34 06
+ikchain_index: 00
+mouths_count: 34 06
+mouths_index: 00
+local_poseparm_count: 1C 07
+local_poseparm_index: 00
+surface_prop_index: 34 06
+key_value_index: 84 51 01
+key_value_count: 80 07
+iklock_count: 00
+iklock_index: 00
+mass: 34 06
+contents: 00 00 80 3F
+include_model_count: 01
+include_model_index: 00
+virtual_model: 1C 07
+anim_blocks_name_index: 00
+anim_blocks_count: 14 04
+anim_blocks_index: 00
+anim_block_model: 00 80 AC 45
+bone_table_name_index: 00
+vertex_base: 34 06
+offset_base: 00
+directional_dot_product: 00
+root_lod: CC 02
+num_allowed_root_lods: 00
+unused0: 80 07
+unused1: 00
+flex_controller_ui_count: 00
+flex_controller_ui_index: 00
+vert_anim_fixed_point_scale: 00
+unused2: 80 07
+studio_hdr_2_index: 25 02
+unused3: 26 02
