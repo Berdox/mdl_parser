@@ -10,14 +10,15 @@ namespace mdl_parser.src.structs
 {
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Vec3 {
-        public float X;
-        public float Y;
-        public float Z;
+    public struct Meta_Header {
+        public string modelName;
+        public int file_length;
+        public string texture_path;
     }
-
+    
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Header {
+    // struct studiohdr_t
+    public class Header {
         // Model format ID (e.g., "IDST" for 0x49 0x44 0x53 0x54)
         public int id;
 
@@ -26,6 +27,9 @@ namespace mdl_parser.src.structs
 
         // Checksum for consistency, must match across related files (e.g., .phy, .vtx)
         public int checksum;
+
+        // The name may need an offset to find the name of model
+        public int name_offset;
 
         // The internal name of the model, usually the model filename with padding
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
@@ -47,10 +51,10 @@ namespace mdl_parser.src.structs
         public Vec3 hull_max;
 
         // Bounding box used for view culling (minimum coordinates)
-        public Vec3 view_bbmin;
+        public Vec3 view_bounding_box_min;
 
         // Bounding box used for view culling (maximum coordinates)
-        public Vec3 view_bbmax;
+        public Vec3 view_bounding_box_max;
 
         // Binary flags for model properties, stored in little-endian order
         public int flags;
@@ -68,22 +72,22 @@ namespace mdl_parser.src.structs
         public int bone_controller_offset;
 
         // Number of hitboxes for collision detection in the model
-        public int hitbox_count;
+        public int hitbox_set_count;
 
         // Offset to the first hitbox data section
-        public int hitbox_offset;
+        public int hitbox_set_offset;
 
         // Number of local animations in the model (e.g., idle, run, jump)
-        public int localanim_count;
+        public int local_anim_count;
 
         // Offset to the local animations data section
-        public int localanim_offset;
+        public int local_anim_offset;
 
         // Number of local sequences in the model (e.g., movement states)
-        public int localseq_count;
+        public int local_seq_count;
 
         // Offset to the local sequences data section
-        public int localseq_offset;
+        public int local_seq_offset;
 
         // Version of the activity list (for animation sequencing)
         public int activity_list_version;
@@ -98,10 +102,10 @@ namespace mdl_parser.src.structs
         public int texture_offset;
 
         // Number of texture directories (directories storing texture files)
-        public int texturedir_count;
+        public int texture_path_count;
 
         // Offset to the texture directory data section
-        public int texturedir_offset;
+        public int texture_path_offset;
 
         // Number of skin references (defines texture slots for skins)
         public int skin_reference_count;
@@ -110,79 +114,82 @@ namespace mdl_parser.src.structs
         public int skin_family_count;
 
         // Index to the skin reference data
-        public int skin_reference_index;
+        public int skin_family_offset;
 
         // Number of body parts in the model (e.g., head, torso, legs)
-        public int bodypart_count;
+        public int body_part_count;
 
         // Offset to the body part data section
-        public int bodypart_offset;
+        public int body_part_offset;
 
         // Number of attachment points (e.g., for props or accessories)
-        public int attachment_count;
+        public int local_attachment_count;
 
         // Offset to the attachment data section
-        public int attachment_offset;
+        public int local_attachment_offset;
 
         // Number of local nodes (used for hierarchical structure)
         public int local_node_count;
 
         // Index to the local node data
-        public int local_node_index;
+        public int local_node_offset;
 
         // Index to the local node names (null-terminated strings)
-        public int local_node_name_index;
+        public int local_node_name_offset;
 
         // Number of flex descriptors (for facial animation controls)
         public int flex_desc_count;
 
         // Index to the flex descriptor data
-        public int flex_desc_index;
+        public int flex_desc_offset;
 
         // Number of flex controllers (controls facial expression changes)
         public int flex_controller_count;
 
         // Index to the flex controller data
-        public int flex_controller_index;
+        public int flex_controller_offset;
 
         // Number of flex rules (how the controllers affect the model)
         public int flex_rules_count;
 
         // Index to the flex rule data
-        public int flex_rules_index;
+        public int flex_rules_offset;
 
         // Number of IK chains (inverse kinematics chains for bone movement)
         public int ikchain_count;
 
         // Index to the IK chain data
-        public int ikchain_index;
+        public int ikchain_offset;
 
         // Number of mouth sections for speech animation (can have more than one)
-        public int mouths_count;
+        public int rui_count;
 
         // Index to the mouth data (defines sounds for speech animations)
-        public int mouths_index;
+        public int rui_offset;
 
         // Number of pose parameters (used for facial expressions)
-        public int local_poseparm_count;
+        public int local_pose_parm_count;
 
         // Index to the pose parameter data
-        public int local_poseparm_index;
+        public int local_pose_parm_offset;
 
         // Index to the surface property value (like material type or surface interaction)
-        public int surface_prop_index;
+        public int surface_prop_offset;
+
+        // Index to the surface property value (like material type or surface interaction)
+        public int surface_prop_name;
 
         // Index to key-value data (used for custom attributes, may reference a texture or other model data)
-        public int key_value_index;
+        public int key_value_offset;
 
         // Count of key-value pairs in the model's key-value data
         public int key_value_count;
 
         // Number of IK lock data (locks for inverse kinematics chains)
-        public int iklock_count;
+        public int local_ik_auto_play_lock_count;
 
         // Index to the IK lock data
-        public int iklock_index;
+        public int local_ik_auto_play_lock_offset;
 
         // Mass of the model in kilograms
         public float mass;
@@ -194,25 +201,34 @@ namespace mdl_parser.src.structs
         public int include_model_count;
 
         // Index to the included model data
-        public int include_model_index;
+        public int include_model_offset;
 
         // Virtual model placeholder for mutable-void* (usually a pointer)
         public int virtual_model;
 
-        // Index to the animation block name data
-        public int anim_blocks_name_index;
-
-        // Count of animation blocks in the model
-        public int anim_blocks_count;
-
-        // Index to the animation block data
-        public int anim_blocks_index;
-
-        // Index to the model's animation block data (another placeholder for mutable-void*)
-        public int anim_block_model;
-
         // Index to the bone table name (used for bone lookup)
-        public int bone_table_name_index;
+        public int bone_table_by_name_offset;
+
+        // Directional light dot product (used for lighting calculations)
+        public byte directional_light_dot_product;
+
+        // Preferred level of detail (LOD) for the model
+        public byte root_lod;
+
+        // Number of allowed root LODs
+        public byte allowed_root_lods_count;
+
+        // Unused byte (likely reserved for future use)
+        public byte unused0;
+
+        // zero out if version < 47
+        public float fade_distance;
+
+        // Number of flex controller UI entries (used for controlling flex parameters)
+        public int flex_controller_ui_count;
+
+        // Index to the flex controller UI entries
+        public int flex_controller_ui_offset;
 
         // Index to the vertex base (for vertex data reference)
         public int vertex_base;
@@ -220,42 +236,66 @@ namespace mdl_parser.src.structs
         // Index to the offset base (used for referencing different data segments)
         public int offset_base;
 
-        // Directional light dot product (used for lighting calculations)
-        public byte directional_dot_product;
+        public int maya_offset;
 
-        // Preferred level of detail (LOD) for the model
-        public byte root_lod;
+        public int source_bone_transform_count;
 
-        // Number of allowed root LODs
-        public byte num_allowed_root_lods;
+        public int source_bone_transform_offset;
 
-        // Unused byte (likely reserved for future use)
-        public byte unused0;
+        public int illum_position_attachment_offset;
 
-        // Unused integer (likely reserved for future use)
-        public int unused1;
+        public int linear_bone_offset;
 
-        // Number of flex controller UI entries (used for controlling flex parameters)
-        public int flex_controller_ui_count;
+        public int bone_flex_driver_count;
 
-        // Index to the flex controller UI entries
-        public int flex_controller_ui_index;
+        public int bone_flex_driver_offset;
 
-        // Scaling factor for vertex animation fixed point representation
-        public float vert_anim_fixed_point_scale;
+        // High detail collision mesh for static props.
+        public int per_tri_collision_offset;
 
-        // Unused integer (likely reserved for future use)
-        public int unused2;
+        public int per_tri_count1;
 
-        // Index to the second studio header data
-        public int studio_hdr_2_index;
+        public int per_tri_count2;
 
-        // Unused integer (likely reserved for future use)
-        public int unused3;
+        public int per_tri_count3;
+
+        // When used the string is normally "Titan", only observed on models for animation.
+        public int unk_string_offset;
+
+        public int vtx_offset;
+
+        public int vvd_offset;
+
+        public int vvc_offset;
+
+        public int phy_offset;
+
+        public int vtx_size;
+
+        public int vvd_size;
+
+        public int vvc_size;
+
+        public int phy_size;
+
+        public int unk_section_offset;
+
+        // Only used if PHY has a solid count of "1"
+        public int unk_section_count;
+
+        public int unknown01;
+
+        public int unknown_offset_06;
+
+        //Nothing observed past here, however the first in may be a count for unknownOffset06
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 59)]
+        public int[] reserved;
+
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Secondary_Header {
+    // studiohdr2_t
+    public class Secondary_Header {
         public int srcbonetransform_count;
         public int srcbonetransform_index;
 
@@ -268,24 +308,6 @@ namespace mdl_parser.src.structs
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
         public int unknown;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class Texture {
-        // Number of bytes past the beginning of this structure
-        // where the first character of the texture name can be found.
-        public int name_offset; // Offset for null-terminated string
-        public int flags;
-
-        public int used;        // Padding?
-        public int unused;      // Padding.
-
-        public int material;        // Placeholder for IMaterial
-        public int client_material; // Placeholder for void*
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 10)]
-        public int unused2; // Final padding
-        // Struct is 64 bytes long
     }
 
 }
