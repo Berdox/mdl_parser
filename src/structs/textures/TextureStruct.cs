@@ -8,9 +8,13 @@ using System.Threading.Tasks;
 namespace mdl_parser.src.structs
 {
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     // mstudiotexture_t
     public class TextureHeader {
+
+        public TextureHeader() {
+            unused2 = new int[10];
+        }
+
         // Number of bytes past the beginning of this structure
         // where the first character of the texture name can be found.
         public int name_offset; // Offset for null-terminated string
@@ -22,8 +26,7 @@ namespace mdl_parser.src.structs
         public int material;        // Placeholder for IMaterial
         public int client_material; // Placeholder for void*
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 10)]
-        public int unused2; // Final padding
+        public int[] unused2; // Final padding
         // Struct is 64 bytes long
     }
 }

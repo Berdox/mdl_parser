@@ -16,7 +16,6 @@ namespace mdl_parser.src.structs
     //	long	checkSum;	// checksum of source .mdl file
     // } phyheader_t;
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class PhyHeader {
         int size;
         int id;

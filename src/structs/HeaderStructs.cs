@@ -8,22 +8,23 @@ using System.Threading.Tasks;
 
 namespace mdl_parser.src.structs
 {
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Meta_Header {
-        public string modelName;
-        public int file_length;
-        public string texture_path;
-    }
     
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     // struct studiohdr_t
     public class Header {
+
+        public Header() {
+            id = new char[4];
+            name = new char[64];
+            reserved = new int[59];
+        }
+
         // Model format ID (e.g., "IDST" for 0x49 0x44 0x53 0x54)
-        public int id;
+        public char[] id;
 
         // Format version number (e.g., 48, represented as 0x30, 0x00, 0x00, 0x00)
         public int version;
+
+        public int fileSize;
 
         // Checksum for consistency, must match across related files (e.g., .phy, .vtx)
         public int checksum;
@@ -32,11 +33,16 @@ namespace mdl_parser.src.structs
         public int name_offset;
 
         // The internal name of the model, usually the model filename with padding
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
         public char[] name;
+
+        public string name_by_offset;
+
+        public string model_name;
 
         // Total data size of the model file in bytes
         public int dataLength;
+
+        public long actual_file_length;
 
         // Position of the player's viewpoint relative to the model's origin
         public Vec3 eyeposition;
@@ -177,7 +183,7 @@ namespace mdl_parser.src.structs
         public int surface_prop_offset;
 
         // Index to the surface property value (like material type or surface interaction)
-        public int surface_prop_name;
+        public string surface_prop_name;
 
         // Index to key-value data (used for custom attributes, may reference a texture or other model data)
         public int key_value_offset;
@@ -288,14 +294,17 @@ namespace mdl_parser.src.structs
         public int unknown_offset_06;
 
         //Nothing observed past here, however the first in may be a count for unknownOffset06
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 59)]
         public int[] reserved;
 
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     // studiohdr2_t
     public class Secondary_Header {
+
+        public Secondary_Header() {
+            unknown = new int[64];
+        }
+
         public int srcbonetransform_count;
         public int srcbonetransform_index;
 
@@ -306,8 +315,7 @@ namespace mdl_parser.src.structs
         // mstudiolinearbone_t
         public int linearbone_index;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
-        public int unknown;
+        public int[] unknown;
     }
 
 }
