@@ -46,6 +46,33 @@ namespace mdl_parser.src.parser
             reader = new BinaryReader(fileStream);
         }
 
+        public T ReadStructFromFile<T>(FileInfo file, long offset) where T : struct {
+            int size = Marshal.SizeOf<T>();
+
+            using (FileStream fs = file.OpenRead())
+            using (BinaryReader reader = new BinaryReader(fs)) {
+                // Check if the file is large enough for the struct after considering the offset
+                if (fs.Length < offset + size)
+                    throw new Exception("File is too small to contain the expected structure at the given offset.");
+
+                // Move the reader's position to the given offset
+                fs.Seek(offset, SeekOrigin.Begin);
+
+                // Read the bytes from the given offset
+                byte[] buffer = reader.ReadBytes(size);
+
+                // Allocate unmanaged memory to hold the struct
+                IntPtr ptr = Marshal.AllocHGlobal(size);
+                try {
+                    Marshal.Copy(buffer, 0, ptr, size);
+                    return Marshal.PtrToStructure<T>(ptr);
+                }
+                finally {
+                    Marshal.FreeHGlobal(ptr);
+                }
+            }
+        }
+
         public string GetStringAtOffset(long startOffset, long offset) {
             string aString = "";
 
