@@ -27,13 +27,17 @@ namespace mdl_parser.src.parser
             //OpenFile(file);
             Logger.Info("MDL Parser started");
             ReadHeader();
-            ReadMayaString();
+            //ReadMayaString();
+
+            Logger.Info("Done parsing MDL file");
 
             // writing to file
-            WriteHeaderToFile();
+            //WriteHeaderToFile();
 
             // printing Hex
             PrintHex();
+
+            Logger.Info("Parser is done");
         }
 
         public void OpenFile(FileInfo file) {
@@ -117,28 +121,35 @@ namespace mdl_parser.src.parser
                     throw new InvalidOperationException("BinaryReader is not initialized.");
                 }
 
-                long fileSize = fileStream.Length;
-                int structSize = Marshal.SizeOf<Header>();
+                //long fileSize = fileStream.Length;
+                //int structSize = Marshal.SizeOf<Header>();
 
-                if (fileSize < structSize) {
-                    Console.WriteLine("The file is too small to contain the Header struct.");
-                    return;
-                }
+                //if (fileSize < structSize) {
+                //    Console.WriteLine("The file is too small to contain the Header struct.");
+                //    return;
+                //}
                 long fileOffsetStart = 0;
                 long fileOffsetEnd = 0;
+
+                Logger.Info("Starting to read and parse Header");
 
                 // Sets the filestream to the beginning of the file
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
                 fileOffsetStart = reader.BaseStream.Position;
-                    
+
+                // Offsets: 0x00
                 mdlData.header.id = reader.ReadChars(4);
 
+                // Offsets: 0x04
                 mdlData.header.version = reader.ReadInt32();
 
+                // Offsets: 0x08
                 mdlData.header.checksum = reader.ReadInt32();
 
+                // Offsets: 0x0C(12)
                 mdlData.header.name_offset = reader.ReadInt32();
 
+                // Offsets: 0x4C(76)
                 mdlData.header.name_by_offset = GetStringAtOffset(0, mdlData.header.name_offset);
                 mdlData.header.name = reader.ReadChars(64);
 
@@ -151,16 +162,23 @@ namespace mdl_parser.src.parser
                 mdlData.header.dataLength = reader.ReadInt32();
                 mdlData.header.actual_file_length = reader.BaseStream.Length;
 
+                // Offsets: 0x50, 0x54, 0x58
                 mdlData.header.eyeposition = new Vec3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
 
+                // Offsets: 0x5C, 0x60, 0x64
                 mdlData.header.illumposition = new Vec3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
 
+                // Offsets: 0x68, 0x6C, 0x70
                 mdlData.header.hull_min = new Vec3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
+                // Offsets: 0x74, 0x78, 0x7C
                 mdlData.header.hull_max = new Vec3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
 
+                // Offsets: 0x80, 0x84, 0x88
                 mdlData.header.view_bounding_box_min = new Vec3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
+                // Offsets: 0x8C, 0x90, 0x94
                 mdlData.header.view_bounding_box_max = new Vec3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
 
+                // Offsets: 0x98
                 mdlData.header.flags = reader.ReadInt32();
 
                 mdlData.header.bone_count = reader.ReadInt32();
@@ -235,11 +253,11 @@ namespace mdl_parser.src.parser
 
                 mdlData.header.surface_prop_offset = reader.ReadInt32();
 
-                //mdlData.header.surface_prop_name = new String(reader.ReadChars(mdlData.header.bone_offset - mdlData.header.maya_offset));
-               // Me.theMdlFileData.theSurfacePropName = Me.GetStringAtOffset(0, Me.theMdlFileData.surfacePropOffset, "theSurfacePropName")
-                //mdlData.header.surface_prop_name = reader.ReadInt32();
+                mdlData.header.surface_prop_name = GetStringAtOffset(0, mdlData.header.surface_prop_offset);
 
+                // Offsets: 0x0138 (312)
                 mdlData.header.key_value_offset = reader.ReadInt32();
+                // Offsets: 0x013C (316)
                 mdlData.header.key_value_count = reader.ReadInt32();
 
                 mdlData.header.local_ik_auto_play_lock_count = reader.ReadInt32();
@@ -312,10 +330,11 @@ namespace mdl_parser.src.parser
                     mdlData.header.reserved[i] = reader.ReadInt32();
                 }
 
-                Console.WriteLine("Header successfully read.");
+                fileOffsetEnd = reader.BaseStream.Position - 1;
+                Logger.Info("Header successfully read between (HEX): " + fileOffsetStart + " : " + fileOffsetEnd);
             }
             catch (Exception ex) {
-                Console.WriteLine($"Error: {ex.Message}");
+                Logger.Error("An error occurred", ex);
             }
         }
 
@@ -457,7 +476,7 @@ namespace mdl_parser.src.parser
         }
 
         public void WriteHeaderToFile() {
-            Utilities.WriteHeaderToFile(mdlData.header, "file.bin");
+           // Utilities.WriteHeaderToFile(mdlData.header, "file.bin");
         }
 
         public void PrintHex() {

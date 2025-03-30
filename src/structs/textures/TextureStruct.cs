@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mdl_parser.src.structs
+namespace mdl_parser.src.structs.textures
 {
 
     // mstudiotexture_t

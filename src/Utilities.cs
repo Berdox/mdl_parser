@@ -15,30 +15,30 @@ namespace mdl_parser.src.utilities {
             Console.WriteLine("Memory (Hex) of {name}: " + BitConverter.ToString(bytes.ToArray()));
         }
 
-        public static void WriteHeaderToFile(Header header, string fileName) {
-            // Get the size of the struct
-            int size = Marshal.SizeOf(typeof(Header));
+        //public static void WriteHeaderToFile(Header header, string fileName) {
+        //    // Get the size of the struct
+        //    int size = Marshal.SizeOf(typeof(Header));
 
-            // Allocate memory for the struct and copy its contents
-            IntPtr ptr = Marshal.AllocHGlobal(size);
-            try {
-                // Marshal the struct to memory
-                Marshal.StructureToPtr(header, ptr, false);
+        //    // Allocate memory for the struct and copy its contents
+        //    IntPtr ptr = Marshal.AllocHGlobal(size);
+        //    try {
+        //        // Marshal the struct to memory
+        //        Marshal.StructureToPtr(header, ptr, false);
 
-                // Create a byte array of the correct size
-                byte[] bytes = new byte[size];
+        //        // Create a byte array of the correct size
+        //        byte[] bytes = new byte[size];
 
-                // Copy the contents from the unmanaged memory into the byte array
-                Marshal.Copy(ptr, bytes, 0, size);
+        //        // Copy the contents from the unmanaged memory into the byte array
+        //        Marshal.Copy(ptr, bytes, 0, size);
 
-                // Write the byte array to a file
-                File.WriteAllBytes(fileName, bytes);
-                Console.WriteLine($"Binary struct written to {fileName}");
-            }
-            finally {
-                // Free the allocated memory
-                Marshal.FreeHGlobal(ptr);
-            }
-        }
+        //        // Write the byte array to a file
+        //        File.WriteAllBytes(fileName, bytes);
+        //        Console.WriteLine($"Binary struct written to {fileName}");
+        //    }
+        //    finally {
+        //        // Free the allocated memory
+        //        Marshal.FreeHGlobal(ptr);
+        //    }
+        //}
     }
 }
